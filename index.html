@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المسابقة الكبرى | سجل الآن</title>
+    
+    <!-- خط Cairo من جوجل -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- أيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --accent-color: #d4af37; /* لون ذهبي للمسابقات */
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .contest-container {
+            background: var(--bg-card);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+        }
+
+        /* تأثير إضاءة علوي */
+        .contest-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        .trophy-icon {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        /* التنسيق الخاص بالمدخلات (Inputs) */
+        .form-group {
+            margin-bottom: 22px;
+            text-align: right;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--accent-color);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .form-control:focus + i {
+            color: var(--accent-color);
+        }
+
+        textarea.form-control {
+            resize: none;
+            height: 100px;
+        }
+
+        /* زر الإرسال */
+        .submit-btn {
+            width: 100%;
+            background: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* رسائل الحالة */
+        .status-message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-message.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success-color);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-message.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* أنيميشن التحميل داخل الزر */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #000;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contest-container">
+        <div class="trophy-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <h1>استمارة التسجيل في المسابقة</h1>
+        <p class="subtitle">املاً البيانات التالية بدقة لتأكيد اشتراكك معنا</p>
+
+        <form id="contestForm">
+            <!-- حقل الاسم كامل -->
+            <div class="form-group">
+                <label for="fullName">الاسم بالكامل:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="fullName" class="form-control" placeholder="اكتب اسمك الثلاثي أو الرباعي" required>
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+
+            <!-- حقل رقم الهاتف -->
+            <div class="form-group">
+                <label for="phoneNumber">رقم الهاتف (واتساب):</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder="مثال: 01015115056" required>
+                    <i class="fas fa-phone"></i>
+                </div>
+            </div>
+
+            <!-- حقل حساب التليجرام أو وسيلة تواصل إضافية -->
+            <div class="form-group">
+                <label for="telegramUser">معرف تليجرام أو فيسبوك (اختياري):</label>
+                <div class="input-wrapper">
+                    <input type="text" id="telegramUser" class="form-control" placeholder="مثال: @username">
+                    <i class="fab fa-telegram-plane"></i>
+                </div>
+            </div>
+
+            <!-- حقل إجابة السؤال أو ملاحظة -->
+            <div class="form-group">
+                <label for="note">لماذا تريد الفوز بهذه المسابقة؟</label>
+                <div class="input-wrapper">
+                    <textarea id="note" class="form-control" placeholder="اكتب سبب مشاركتك أو إجابتك هنا..." required></textarea>
+                    <i class="fas fa-pen" style="top: 20px; transform: none;"></i>
+                </div>
+            </div>
+
+            <!-- زر الإرسال -->
+            <button type="submit" id="submitBtn" class="submit-btn">
+                <span class="spinner" id="btnSpinner"></span>
+                <span id="btnText">ارسل البيانات</span>
+                <i class="fas fa-paper-plane" id="btnIcon"></i>
+            </button>
+        </form>
+
+        <!-- مكان ظهور رسالة النجاح أو الفشل -->
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script>
+        // ==========================================================
+        // 🛠️ الإعدادات الخاصة ببوت تليجرام (املاً البيانات هنا)
+        // ==========================================================
+        const TELEGRAM_BOT_TOKEN = '8965334024:AAF36Q6ueyVM2AKg6ac8Qgqwd4tRw4MkvH4'; 
+        const TELEGRAM_CHAT_ID = '8332986884'; 
+
+        // استدعاء عناصر الواجهة
+        const form = document.getElementById('contestForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const statusMessage = document.getElementById('statusMessage');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // منع الصفحة من إعادة التحميل عند الإرسال
+
+            // تفعيل وضع التحميل داخل الزر لعدم الضغط مرتين
+            submitBtn.disabled = true;
+            btnSpinner.style.display = 'block';
+            btnIcon.style.display = 'none';
+            btnText.textContent = 'جاري الإرسال...';
+            statusMessage.style.display = 'none';
+
+            // تجميع البيانات من الحقول
+            const name = document.getElementById('fullName').value;
+            const phone = document.getElementById('phoneNumber').value;
+            const contact = document.getElementById('telegramUser').value || 'لم يتم تحديده';
+            const note = document.getElementById('note').value;
+
+            // تنسيق الرسالة بشكل منسق وجذاب لتصل للتليجرام
+            const textMessage = `
+🏆 *مشترك جديد في المسابقة!* 🏆
+──────────────────
+👤 *الاسم كامل:* ${name}
+📞 *رقم الهاتف:* ${phone}
+🌐 *وسيلة تواصل:* ${contact}
+📝 *سبب المشاركة/الإجابة:* 
+${note}
+──────────────────
+📅 *تاريخ التسجيل:* ${new Date().toLocaleString('ar-EG')}
+`;
+
+            // رابط الـ API الخاص بتليجرام لإرسال الرسائل عبر الـ Bot
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+            // تجهيز البيانات بصيغة JSON مع تفعيل الـ Markdown لتنسيق الخط بالجروب/البوت
+            const payload = {
+                chat_id: TELEGRAM_CHAT_ID,
+                text: textMessage,
+                parse_mode: 'Markdown'
+            };
+
+            // استخدام fetch لإرسال البيانات للبوت بدون تحديث الصفحة
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    // في حال النجاح
+                    statusMessage.className = 'status-message success';
+                    statusMessage.innerHTML = '<i class="fas fa-check-circle"></i> تم إرسال بياناتك واشتراكك بنجاح! بالتوفيق.';
+                    form.reset(); // تفريغ حقول النموذج للزائر التالي
+                } else {
+                    // في حال حدوث مشكلة من تليجرام (مثلا توكن خاطئ أو ID خاطئ)
+                    statusMessage.className = 'status-message error';
+                    statusMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i> حدث خطأ أثناء إرسال البيانات، يرجى المحاولة لاحقاً.';
+                }
+            })
+            .catch(error => {
+                // في حال انقطاع الإنترنت أو مشكلة بالشبكة
+                statusMessage.className = 'status-message error';
+                statusMessage.innerHTML = '<i class="fas fa-wifi"></i> خطأ في الاتصال، تأكد من اتصالك بالإنترنت.';
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                // إعادة الزر لوضعه الطبيعي بعد انتهاء العملية
+                submitBtn.disabled = false;
+                btnSpinner.style.display = 'none';
+                btnIcon.style.display = 'inline-block';
+                btnText.textContent = 'ارسل البيانات';
+            });
+        });
+    </script>
+</body>
+</html>
